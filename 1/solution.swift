@@ -16,7 +16,6 @@ func zip3<T>(_ first: [T], _ second: [T], _ third: [T]) -> [(T, T, T)] {
 
 func openFile(filename: String) throws -> String {
     let cwd = FileManager.default.currentDirectoryPath
-    //let url = URL(fileURLWithPath: cwd)
     return try String(contentsOfFile: "\(cwd)/\(filename)", encoding: .utf8)
 }
 
