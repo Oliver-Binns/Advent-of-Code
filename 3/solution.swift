@@ -22,36 +22,44 @@ func openFile(filename: String) throws -> String {
     return try String(contentsOfFile: "\(cwd)/\(filename)", encoding: .utf8)
 }
 
-typealias Counter = (zeros: Int, ones: Int)
-
 func parseInput(filename: String) throws -> [String] {
     try openFile(filename: filename)
         .components(separatedBy: "\n")
         .filter { !$0.isEmpty }
 }
 
+// MARK: Data Types & Transformation
+
+typealias Counter = (zeros: Int, ones: Int)
+
 func convertInput(_ input: [String]) throws -> [Counter] {
     guard let lineLength = input.first?.count else {
         throw InputError.empty
     }
-    return input.reduce((0..<lineLength).map { _ in (zeros: 0, ones: 0) }) { counters, nextValue in
+    return input
+        .reduce((0..<lineLength)
+        .map { _ in (zeros: 0, ones: 0) }) { counters, nextValue in
         zip(counters, nextValue).map(updateCounter)
     }
 }
 
 func updateCounter(_ counter: Counter, forCharacter character: Character) -> Counter {
-    if character == "0" {
-        return (zeros: counter.zeros + 1, ones: counter.ones)
-    } else {
-        return (zeros: counter.zeros, ones: counter.ones + 1)
+    character == "0" ?
+        (zeros: counter.zeros + 1, ones: counter.ones) :
+        (zeros: counter.zeros, ones: counter.ones + 1)
     }
 }
 
-func binaryToDecimal(values: [String]) throws -> Int {
-    guard let decimalValue = Int(values.joined(), radix: 2) else {
+func binaryToDecimal(value: String?) throws -> Int {
+    guard let binaryValue = value,
+          let decimalValue = Int(binaryValue, radix: 2) else {
         throw InputError.invalidBinaryValue
     }
     return decimalValue
+}
+
+func binaryToDecimal(values: [String]) throws -> Int {
+    try binaryToDecimal(values.joined())
 }
 
 // MARK: - Solve Challenge 1
@@ -91,20 +99,12 @@ func filterBits(data: [String], using comparison: (Int, Int) -> Bool) throws -> 
     }.first
 }
 
-func binaryToDecimal(value: String?) throws -> Int {
-    guard let binaryValue = value,
-          let decimalValue = Int(binaryValue, radix: 2) else {
-        throw InputError.invalidBinaryValue
-    }
-    return decimalValue
-}
-
 func calculateOxygenGenerationRating(data: [String]) throws -> Int {
-    return try binaryToDecimal(value: filterBits(data: data, using: >))
+    try binaryToDecimal(value: filterBits(data: data, using: >))
 }
 
 func calculateCO2ScrubberRating(data: [String]) throws -> Int {
-    return try binaryToDecimal(value: filterBits(data: data, using: <=))
+    try binaryToDecimal(value: filterBits(data: data, using: <=))
 }
 
 func solveExtension(filename: String) throws -> Int {
