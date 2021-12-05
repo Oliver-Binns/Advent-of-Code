@@ -47,7 +47,6 @@ func updateCounter(_ counter: Counter, forCharacter character: Character) -> Cou
     character == "0" ?
         (zeros: counter.zeros + 1, ones: counter.ones) :
         (zeros: counter.zeros, ones: counter.ones + 1)
-    }
 }
 
 func binaryToDecimal(value: String?) throws -> Int {
@@ -59,7 +58,7 @@ func binaryToDecimal(value: String?) throws -> Int {
 }
 
 func binaryToDecimal(values: [String]) throws -> Int {
-    try binaryToDecimal(values.joined())
+    try binaryToDecimal(value: values.joined())
 }
 
 // MARK: - Solve Challenge 1
