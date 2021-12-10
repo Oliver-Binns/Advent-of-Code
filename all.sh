@@ -1,4 +1,4 @@
-for file in $(find . -name "*.swift" | sort -n); do 
+for file in $(find . -name "*.swift" | sort -V); do 
   directory=$(dirname $file)  
   filename=$(basename $file)
   echo ""
