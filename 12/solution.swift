@@ -25,28 +25,41 @@ func parseLines(input: String) -> [[String]] {
         .filter { $0.count == 2 }
 }
 
-// MARK: - Data Structure
-
-enum CaveSize {
-    case big, small
+func parseGraph(connections: [[String]]) -> [String: [String]] {
+    connections
+        .map { ($0.first!, $0.last!) }
+        .reduce(into: [:]) { dictionary, newValue in
+        dictionary[newValue.0, default: []].append(newValue.1)
+        dictionary[newValue.1, default: []].append(newValue.0)
+    }
 }
-
-struct Cave {
-    let name: String
-}
-
 
 // MARK: - Challenge 1 Solution
-func solve(filename: String) throws -> Int {
+func solve(filename: String, stopFilter: ([String], String) -> Bool = { !$0.contains($1) }) throws -> Int {
     let input = try openFile(filename: filename)
     let connections = parseLines(input: input)
-    let reverseConnections = connections.map { $0.reversed() }
-    let grid = 
+    let graph = parseGraph(connections: connections)
 
-    return 0
-} 
+    var routes = [["start"]]
+    while !routes.allSatisfy({ $0.last == "end" }) {
+        routes = routes.flatMap { route -> [[String]] in
+            guard let lastStop = route.last,
+                  lastStop != "end" else { return [route] }
+            
+            return graph[lastStop, default: []]
+                .filter { $0.first!.isUppercase || stopFilter(route, $0) } 
+                .map { route + [$0] }
+        }
+        print(routes.count)
+    }
+
+    return routes.count
+}
 
 // MARK: - Challenge 2 Solution
 func solveExtension(filename: String) throws -> Int {
-    0
-} 
+    try solve(filename: filename) { 
+        let stop = $1;
+        return $0.filter { $0 == stop }.count <= 1
+    }
+}
