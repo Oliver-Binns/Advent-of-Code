@@ -44,13 +44,14 @@ func solve(filename: String, stopFilter: ([String], String) -> Bool = { !$0.cont
     while !routes.allSatisfy({ $0.last == "end" }) {
         routes = routes.flatMap { route -> [[String]] in
             guard let lastStop = route.last,
-                  lastStop != "end" else { return [route] }
+                  lastStop != "end" else {
+                return [route]
+            }
             
             return graph[lastStop, default: []]
-                .filter { $0.first!.isUppercase || stopFilter(route, $0) } 
+                .filter { $0.first!.isUppercase || stopFilter(route, $0) }
                 .map { route + [$0] }
         }
-        print(routes.count)
     }
 
     return routes.count
@@ -58,8 +59,24 @@ func solve(filename: String, stopFilter: ([String], String) -> Bool = { !$0.cont
 
 // MARK: - Challenge 2 Solution
 func solveExtension(filename: String) throws -> Int {
-    try solve(filename: filename) { 
-        let stop = $1;
-        return $0.filter { $0 == stop }.count <= 1
+    try solve(filename: filename) { route, newStop in
+        guard newStop != "start" else { return false }
+        
+        var stops = Set<String>()
+        var multipleAttempts: Bool = false
+        
+        for stop in route {
+            if stops.contains(stop) && stop.first!.isLowercase {
+                if multipleAttempts {
+                    return false
+                } else {
+                    multipleAttempts = true
+                }
+            } else {
+                stops.insert(stop)
+            }
+        }
+        
+        return true
     }
 }
