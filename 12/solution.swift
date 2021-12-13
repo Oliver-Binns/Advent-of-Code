@@ -35,7 +35,8 @@ func parseGraph(connections: [[String]]) -> [String: [String]] {
 }
 
 // MARK: - Challenge 1 Solution
-func solve(filename: String, stopFilter: ([String], String) -> Bool = { !$0.contains($1) }) throws -> Int {
+func solve(filename: String,
+           stopFilter: ([String], String) -> Bool = { !$0.contains($1) }) throws -> Int {
     let input = try openFile(filename: filename)
     let connections = parseLines(input: input)
     let graph = parseGraph(connections: connections)
