@@ -1,14 +1,16 @@
 import Foundation
 
-try print(/*"""
+let sample = try retrieveMatchedScanners(filename: "sample.input")
+let puzzle = try retrieveMatchedScanners(filename: "solution.input")
+
+try print("""
 Day 19:
-Sample Answer: \(solve(filename: "sample.input"))
-Solution Answer: \(solve(filename: "solution.input"))
-*/
-"""
+Sample Answer: \(solve(scanners: sample))
+Solution Answer: \(solve(scanners: puzzle))
+
 Extension Task:
-Sample Answer: \(solveExtension(filename: "sample.input"))
-Solution Answer: \(solveExtension(filename: "solution.input"))
+Sample Answer: \(solveExtension(scanners: sample))
+Solution Answer: \(solveExtension(scanners: puzzle))
 """)
 
 // MARK: - Parse input into data structure
@@ -177,9 +179,8 @@ struct Scanner {
 
 // MARK: - Challenge 1 Solution
 
-func solve(filename: String) throws -> Int {
-    let matchedScanners = try retrieveMatchedScanners(filename: filename)
-    return matchedScanners
+func solve(scanners: [Scanner]) throws -> Int {
+    scanners
         .map { $0.transformedBeacons }
         .reduce(Set<Position>()) {
             $0.union($1)
@@ -215,13 +216,11 @@ func retrieveMatchedScanners(filename: String) throws -> [Scanner] {
 
 // MARK: - Challenge 2 Solution
 
-func solveExtension(filename: String) throws -> Int {
-    let matchedScanners = try retrieveMatchedScanners(filename: filename)
-
+func solveExtension(scanners: [Scanner]) throws -> Int {
     var distances: [Int] = []
-    for x in 0..<matchedScanners.count {
-        for y in 0..<matchedScanners.count {
-            distances.append(Position.manhattanDistance(matchedScanners[x].position, b: matchedScanners[y].position))
+    for x in 0..<scanners.count {
+        for y in 0..<scanners.count {
+            distances.append(Position.manhattanDistance(scanners[x].position, b: scanners[y].position))
         }
     }
 
