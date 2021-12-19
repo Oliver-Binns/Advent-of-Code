@@ -50,62 +50,33 @@ extension Position: CustomStringConvertible {
     var description: String { "(\(x),\(y),\(z))" }
 }
 extension Position {
-    var possibleOrientations: [Position] {
-        [
-            Position(x: x, y: y, z: z),
-            Position(x: -x, y: y, z: z),
-            Position(x: -x, y: -y, z: z),
-            Position(x: -x, y: y, z: -z),
-            Position(x: -x, y: -y, z: -z),
-            Position(x: x, y: -y, z: z),
-            Position(x: x, y: -y, z: -z),
-            Position(x: x, y: y, z: -z),
-
-            Position(x: x, y: z, z: y),
-            Position(x: -x, y: z, z: y),
-            Position(x: -x, y: -z, z: y),
-            Position(x: -x, y: z, z: -y),
-            Position(x: -x, y: -z, z: -y),
-            Position(x: x, y: -z, z: y),
-            Position(x: x, y: -z, z: -y),
-            Position(x: x, y: z, z: -y),
-
-            Position(x: z, y: y, z: x),
-            Position(x: -z, y: y, z: x),
-            Position(x: -z, y: -y, z: x),
-            Position(x: -z, y: y, z: -x),
-            Position(x: -z, y: -y, z: -x),
-            Position(x: z, y: -y, z: x),
-            Position(x: z, y: -y, z: -x),
-            Position(x: z, y: y, z: -x),
-
-            Position(x: y, y: x, z: z),
-            Position(x: -y, y: x, z: z),
-            Position(x: -y, y: -x, z: z),
-            Position(x: -y, y: x, z: -z),
-            Position(x: -y, y: -x, z: -z),
-            Position(x: y, y: -x, z: z),
-            Position(x: y, y: -x, z: -z),
-            Position(x: y, y: x, z: -z),
-
-            Position(x: z, y: x, z: y),
-            Position(x: -z, y: x, z: y),
-            Position(x: -z, y: -x, z: y),
-            Position(x: -z, y: x, z: -y),
-            Position(x: -z, y: -x, z: -y),
-            Position(x: z, y: -x, z: y),
-            Position(x: z, y: -x, z: -y),
-            Position(x: z, y: x, z: -y),
-
-            Position(x: y, y: z, z: x),
-            Position(x: -y, y: z, z: x),
-            Position(x: -y, y: -z, z: x),
-            Position(x: -y, y: z, z: -x),
-            Position(x: -y, y: -z, z: -x),
-            Position(x: y, y: -z, z: x),
-            Position(x: y, y: -z, z: -x),
-            Position(x: y, y: z, z: -x)
-        ]
+    func orientation(_ number: Int) -> Position {
+        switch number {
+        case 0: return Position(x: x, y: y, z: z)
+        case 1: return Position(x: x, y: -z, z: y)
+        case 2: return Position(x: x, y: -y, z: -z)
+        case 3: return Position(x: x, y: z, z: -y)
+        case 4: return Position(x: -x, y: y, z: -z)
+        case 5: return Position(x: -x, y: -z, z: -y)
+        case 6: return Position(x: -x, y: -y, z: z)
+        case 7: return Position(x: -x, y: z, z: y)
+        case 8: return Position(x: y, y: x, z: -z)
+        case 9: return Position(x: y, y: -z, z: -x)
+        case 10: return Position(x: y, y: -x, z: z)
+        case 11: return Position(x: y, y: z, z: x)
+        case 12: return Position(x: -y, y: x, z: z)
+        case 13: return Position(x: -y, y: -z, z: x)
+        case 14: return Position(x: -y, y: -x, z: -z)
+        case 15: return Position(x: -y, y: z, z: -x)
+        case 16: return Position(x: z, y: y, z: -x)
+        case 17: return Position(x: z, y: x, z: y)
+        case 18: return Position(x: z, y: -y, z: x)
+        case 19: return Position(x: z, y: -x, z: -y)
+        case 20: return Position(x: -z, y: y, z: x)
+        case 21: return Position(x: -z, y: -x, z: y)
+        case 22: return Position(x: -z, y: -y, z: -x)
+        default: return Position(x: -z, y: x, z: -y)
+        }
     }
 }
 extension Position {
@@ -148,16 +119,16 @@ struct Scanner {
 
     private func calculateTransformedBeacons() -> Set<Position> {
         Set(beacons
-                .map { $0.possibleOrientations[orientation] }
+                .map { $0.orientation(orientation) }
                 .map { $0 + position })
     }
 
     func attemptToMatch(with otherScanner: Scanner) -> Scanner? {
         for beacon in transformedBeacons {
-            for transformation in 0..<beacon.possibleOrientations.count {
+            for transformation in 0..<24 {
                 for otherBeacon in otherScanner.beacons {
                     // Attempt to Match Pairs: Calculate Offset Between Two Beacons
-                    let position = (beacon - otherBeacon.possibleOrientations[transformation])
+                    let position = (beacon - otherBeacon.orientation(transformation))
 
                     let scanner = Scanner(position: position,
                                           orientation: transformation,
