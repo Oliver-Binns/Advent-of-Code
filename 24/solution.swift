@@ -2,11 +2,11 @@ import Foundation
 
 try print("""
 Day 23:
-Sample Answer: \(solve(filename: "sample.input"))
+Sample Answer: (solve(filename: "sample.input"))
 Solution Answer: \(solve(filename: "solution.input"))
 
 Extension Task:
-Sample Answer: \(solveExtension(filename: "sample.input"))
+Sample Answer: (solveExtension(filename: "sample.input"))
 Solution Answer: \(solveExtension(filename: "solution.input"))
 """)
 
@@ -59,12 +59,10 @@ enum InputValue {
 
 typealias Line = (Operation, Character, InputValue)
 
-func runProgramme(_ lines: [Line], initialState: [Character: Int],
-                  withInput input: () -> Int) -> [Character: Int] {
+func runProgramme(_ lines: [Line], initialState: [Character: Int]) -> [Character: Int] {
     lines.reduce(into: initialState) { variables, nextLine in
         switch nextLine.0 {
-        case .input:
-            variables[nextLine.1] = input()
+        case .input: break
         case .add:
             if case .value(let value) = nextLine.2 {
                 variables[nextLine.1, default: 0] += value
@@ -102,8 +100,11 @@ func runProgramme(_ lines: [Line], initialState: [Character: Int],
 }
 
 // MARK: - Challenge 1 Solution
+func solve(filename: String) throws -> String {
+    try solve(filename: filename, using: >)
+}
 
-func solve(filename: String, using comparison: (Int, Int) -> Bool = <) throws -> String {
+func solve(filename: String, using comparison: (Int, Int) -> Bool) throws -> String {
     let input = try openFile(filename: filename)
     let lines = parseInput(input)
     let sections = lines
@@ -117,7 +118,7 @@ func solve(filename: String, using comparison: (Int, Int) -> Bool = <) throws ->
 
         inputStates.forEach { (z, string) in
             (1..<10).forEach { w in
-                let state = runProgramme(nextSection, initialState: ["w": w, "z": z], withInput: { 0 })
+                let state = runProgramme(nextSection, initialState: ["w": w, "z": z])
                 let newZ = state["z", default: 0]
                 let newString = string + "\(w)"
 
@@ -139,6 +140,6 @@ func solve(filename: String, using comparison: (Int, Int) -> Bool = <) throws ->
 
 // MARK: - Challenge 2 Solution
 
-func solveExtension(filename: String) throws -> Int {
-    try solve(filename: filename, using: >)
+func solveExtension(filename: String) throws -> String {
+    try solve(filename: filename, using: <)
 }
