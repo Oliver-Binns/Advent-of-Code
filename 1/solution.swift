@@ -1,14 +1,8 @@
 import Foundation
 
-extension Array {
-    func removingFirst() -> Self {
-        var copy = self
-        copy.removeFirst()
-        return copy
-    }
-}
-
-func zip3<T>(_ first: [T], _ second: [T], _ third: [T]) -> [(T, T, T)] {
+func zip3<T: Sequence,
+          U: Sequence,
+          V: Sequence>(_ first: T, _ second: U, _ third: V) -> [(T.Element, U.Element, V.Element)] {
     zip(zip(first, second), third).map {
         ($0.0, $0.1, $1)
     }
@@ -26,7 +20,7 @@ func parseInput(filename: String) throws -> [Int] {
 }
 
 func solve(input: [Int]) -> Int {
-    zip(input, input.removingFirst())
+    zip(input, input.suffix(from: 1))
         .filter { $0.0 < $0.1 }
         .count
 }
@@ -39,7 +33,7 @@ func solve(filename: String) throws -> Int {
 func solveExtension(filename: String) throws -> Int {
     let input = try parseInput(filename: filename)
     return solve(input:
-        zip3(input, input.removingFirst(), input.removingFirst().removingFirst())
+        zip3(input, input.suffix(from: 1), input.suffix(from: 2))
             .map { $0.0 + $0.1 + $0.2 }
     )
 }

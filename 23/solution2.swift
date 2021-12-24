@@ -231,16 +231,15 @@ struct Burrow {
     }
 
     var correctSlots: Int {
-        16 - remainingRoomPositions.map { $0.count }.reduce(0, +)
+        roomPositions.count - remainingRoomPositions.map { $0.count }.reduce(0, +)
     }
 
     var isComplete: Bool {
-        inHallway == 0 && rooms == [
-            [.amphipod(.amber), .amphipod(.amber), .amphipod(.amber), .amphipod(.amber)],
-            [.amphipod(.bronze), .amphipod(.bronze), .amphipod(.bronze), .amphipod(.bronze)],
-            [.amphipod(.copper), .amphipod(.copper), .amphipod(.copper), .amphipod(.copper)],
-            [.amphipod(.desert), .amphipod(.desert), .amphipod(.desert), .amphipod(.desert)]
-        ]
+        inHallway == 0
+        && rooms[0].allSatisfy { $0 == .amphipod(.amber) }
+        && rooms[1].allSatisfy { $0 == .amphipod(.bronze) }
+        && rooms[2].allSatisfy { $0 == .amphipod(.copper) }
+        && rooms[3].allSatisfy { $0 == .amphipod(.desert) }
     }
 
     init(spaces: [[Space]], cost: Int = 0) {
@@ -311,45 +310,6 @@ func solve(filename: String) throws -> Int {
                 }
                 dictionary[nextValue.0] = min(cost, nextValue.1)
             }
-        /*let toImprove = burrows.removeLast()
-
-        if explored.contains(toImprove.description) {
-            continue
-        }
-        explored.insert(toImprove.description)
-
-        let newContents = toImprove.sort()
-
-        // if we have a complete solution: let's remove anything with a higher cost
-        if newContents.contains(where: { $0.isComplete }),
-            let newSmallest = newContents.filter({ $0.isComplete }).map({ $0.cost }).min() {
-
-            if let unwrapped = smallest {
-                smallest = min(unwrapped, newSmallest)
-                if let smallest = smallest {
-                    print("smallest", smallest)
-                    print(newContents.filter({ $0.isComplete }).last!)
-                }
-            } else {
-                smallest = newSmallest
-            }
-
-            burrows.append(contentsOf: newContents.filter { !$0.isComplete })
-        } else {
-            burrows.append(contentsOf: newContents)
-        }
-
-        if let smallest = smallest {
-            burrows = burrows.filter { $0.cost < smallest }
-        }
-
-        burrows = burrows.sorted(by: {
-            // tackle those with less rooms remaining first
-            guard $0.correctSlots != $1.correctSlots else {
-                return $0.cost > $1.cost
-            }
-            return $0.correctSlots < $1.correctSlots
-        })*/
     }
 
     return smallest
