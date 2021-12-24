@@ -2,11 +2,11 @@ import Foundation
 
 try print("""
 Day 23:
-Sample Answer: (solve(filename: "sample.input"))
+Sample Answer: \(solve(filename: "sample.input"))
 Solution Answer: \(solve(filename: "solution.input"))
 
 Extension Task:
-Sample Answer: (solveExtension(filename: "sample.input"))
+Sample Answer: \(solveExtension(filename: "sample.input"))
 Solution Answer: \(solveExtension(filename: "solution.input"))
 """)
 
@@ -113,7 +113,6 @@ func solve(filename: String, using comparison: (Int, Int) -> Bool) throws -> Str
         .map(Array.init)
 
     let value: [Int: String] = sections.reduce([0: ""]) { inputStates, nextSection in
-        print("next section", inputStates.count)
         var newDictionary: [Int: String] = [:]
 
         inputStates.forEach { (z, string) in
