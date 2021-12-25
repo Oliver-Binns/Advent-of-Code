@@ -1,7 +1,7 @@
 import Foundation
 
 try print("""
-Day 23:
+Day 24:
 Sample Answer: \(solve(filename: "sample.input"))
 Solution Answer: \(solve(filename: "solution.input"))
 
