@@ -11,8 +11,8 @@ struct Day9: Solution {
             .compactMap(Int.init)
     }
     
-    func calculatePartOne() -> String {
-        calculatePartOne(preambleLength: 25).description
+    func calculatePartOne() -> Int {
+        calculatePartOne(preambleLength: 25)
     }
     
     func calculatePartOne(preambleLength: Int) -> Int {
@@ -20,17 +20,17 @@ struct Day9: Solution {
         where !possibleValues(for: index, preambleLength: preambleLength).contains(numbers[index]) {
             return numbers[index]
         }
-        return -1
+        return 0
     }
     
-    func calculatePartTwo() -> String {
-        calculatePartTwo(preambleLength: 25).description
+    func calculatePartTwo() -> Int {
+        calculatePartTwo(preambleLength: 25)
     }
     
     func calculatePartTwo(preambleLength: Int) -> Int {
         let firstInvalidValue = calculatePartOne(preambleLength: preambleLength)
         guard let index = numbers.firstIndex(of: firstInvalidValue) else {
-            return -1
+            return 0
         }
         
         for index in (0..<index).reversed() {
@@ -45,7 +45,7 @@ struct Day9: Solution {
                 }
             }
         }
-        return -1
+        return 0
     }
 }
 

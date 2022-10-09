@@ -5,9 +5,9 @@ protocol SolutionTest {
 }
 
 extension SolutionTest {
-    func getTestData() throws -> String {
+    func getTestData(filename: String? = nil) throws -> String {
         let input = try XCTUnwrap(Bundle.module
-            .url(forResource: "Day\(day)", withExtension: nil))
+            .url(forResource: filename ?? "Day\(day)", withExtension: nil))
         return try String(contentsOf: input)
     }
 }
