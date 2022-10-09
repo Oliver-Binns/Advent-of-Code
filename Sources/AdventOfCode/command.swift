@@ -4,7 +4,7 @@ import Foundation
 struct Runner {
     static func main() throws {
         let days: [(class: any Solution.Type, input: String)] = [
-            /*(Day1.self, "Expenses"),
+            (Day1.self, "Expenses"),
             (Day2.self, "Passwords"),
             (Day3.self, "Map"),
             (Day4.self, "Documentation"),
@@ -13,8 +13,9 @@ struct Runner {
             (Day7.self, "Bag Restrictions"),
             (Day8.self, "Program Code"),
             (Day9.self, "Day9"),
-            (Day10.self, "Day10"),*/
+            (Day10.self, "Day10"),
             (Day11.self, "Day11"),
+            (Day12.self, "Day12"),
         ]
         
         try days.map {
