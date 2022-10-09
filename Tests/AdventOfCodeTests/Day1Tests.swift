@@ -1,11 +1,14 @@
 import XCTest
 @testable import AdventOfCode
 
-final class Day1Tests: XCTestCase {
-    func testSolution() throws {
-        let input = try XCTUnwrap(Bundle(for: Self.self)
-            .url(forResource: "Day1", withExtension: nil))
-        let fileContents = try String(contentsOf: input)
-        XCTAssertEqual(Day1(input: fileContents).calculatePartOne(), "514579")
+final class Day1Tests: XCTestCase, SolutionTest {
+    let day = 1
+    
+    func testPartOne() throws {
+        try XCTAssertEqual(Day1(input: getTestData()).calculatePartOne(), "514579")
+    }
+    
+    func testPartTwo() throws {
+        try XCTAssertEqual(Day1(input: getTestData()).calculatePartTwo(), "241861950")
     }
 }
