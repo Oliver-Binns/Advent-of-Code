@@ -9,7 +9,7 @@ let package = Package(
     ],
     targets: [
         .executableTarget(name: "AdventOfCode",
-                          resources: [.copy("Resources")]),
+                          resources: [.process("Resources")]),
         .testTarget(name: "AdventOfCodeTests",
                     dependencies: ["AdventOfCode"],
                     resources: [.process("Resources")])

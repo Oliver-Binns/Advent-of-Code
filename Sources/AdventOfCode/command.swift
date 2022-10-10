@@ -16,6 +16,19 @@ struct Runner {
             (Day10.self, "Day10"),
             (Day11.self, "Day11"),
             (Day12.self, "Day12"),
+            (Day13.self, "Day13"),
+            (Day14.self, "Day14"),
+            (Day15.self, "Day15"),
+            (Day16.self, "Day16"),
+            (Day17.self, "Day17"),
+            (Day18.self, "Day18"),
+            (Day19.self, "Day19"),
+            (Day20.self, "Day20"),
+            (Day21.self, "Day21"),
+            (Day22.self, "Day22"),
+            (Day23.self, "Day23"),
+            (Day24.self, "Day24"),
+            (Day25.self, "Day25"),
         ]
         
         try days.map {
