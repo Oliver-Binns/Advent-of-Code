@@ -12,3 +12,10 @@ final class Day15Tests: XCTestCase, SolutionTest {
         try XCTAssertEqual(Day15(input: getTestData()).calculatePartTwo(), 0)
     }
 }
+
+extension Day15Tests {
+    func testInitialisation() throws {
+        let sut = try Day15(input: getTestData())
+        XCTAssertEqual(sut.numbers, [0, 3, 6])
+    }
+}
