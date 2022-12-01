@@ -1,3 +1,5 @@
+import Algorithms
+
 struct Day1: Solution {
     static let day = 1
     
@@ -12,6 +14,7 @@ struct Day1: Solution {
                     .compactMap(Int.init)
                     .reduce(0, +)
             }
+            .max(count: 3)
             .sorted(by: >)
     }
 

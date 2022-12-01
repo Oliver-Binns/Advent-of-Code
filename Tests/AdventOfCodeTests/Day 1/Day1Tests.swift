@@ -13,7 +13,7 @@ final class Day1Tests: XCTestCase, SolutionTest {
     }
 }
 
-extension Day1Tests {    
+extension Day1Tests {
     func testSum() throws {
         func testTotals() throws {
             try XCTAssertEqual(sut.caloriesCarried, [
