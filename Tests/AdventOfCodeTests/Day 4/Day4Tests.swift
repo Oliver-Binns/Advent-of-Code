@@ -28,10 +28,10 @@ extension Day4Tests {
     func testFullyContains() {
         XCTAssertFalse((2...3).fullyContains(4...5))
         XCTAssertFalse((2...6).fullyContains(4...8))
+        XCTAssertFalse((22...77).fullyContains(14...96))
+        
         XCTAssertTrue((2...8).fullyContains(3...7))
         XCTAssertTrue((4...6).fullyContains(6...6))
-        
-        XCTAssertFalse((22...77).fullyContains(14...96))
         XCTAssertTrue((14...96).fullyContains(22...77))
     }
     
