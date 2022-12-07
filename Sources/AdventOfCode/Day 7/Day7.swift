@@ -3,7 +3,7 @@ var test = 0
 struct Day7: Solution {
     static let day = 7
     
-    let state: Output
+    let state: Folder
     
     init(input: String) {
         state = Self.parseInput(input)
@@ -48,7 +48,7 @@ extension Day7 {
             }
     }
     
-    static func parseInput(_ input: String) -> Output {
+    static func parseInput(_ input: String) -> Folder {
         generateFileStructure(input: parseInput(structureRawInput(input)))
     }
     
@@ -68,7 +68,7 @@ extension Day7 {
                     .map {
                         switch $0.first {
                         case "dir":
-                            return .directory($0[1], [])
+                            return .directory($0[1])
                         default:
                             guard let size = Int($0[0]) else {
                                 preconditionFailure("File has invalid size")
@@ -81,7 +81,7 @@ extension Day7 {
         }
     }
     
-    static func generateFileStructure(input: [Input]) -> Output {
+    static func generateFileStructure(input: [Input]) -> Folder {
         var fileSystem = Folder(name: "/")
         var currentPath = [String]()
         
@@ -97,31 +97,26 @@ extension Day7 {
             }
         }
         
-        return fileSystem.output
+        return fileSystem
     }
 }
 
 struct Folder {
     let name: String
     var folders: [String: Folder] = [:]
-    var files: [Output] = []
+    var files: [File] = []
 }
 
 extension Folder {
-    var output: Output {
-        return .directory(name,
-                          files + folders.compactMap { $0.value.output })
-    }
-    
     mutating func updatePath(_ path: [String],
-                    withContents contents: [Output]) {
+                    withContents contents: [ListedItem]) {
         guard path.count > 1 else {
             contents.forEach {
                 switch $0 {
-                case .directory(let name, _):
+                case .directory(let name):
                     folders[name] = Folder(name: name)
-                default:
-                    files.append($0)
+                case .file(let name, let size):
+                    files.append(File(name: name, size: size))
                 }
             }
             return
@@ -134,76 +129,28 @@ extension Folder {
     }
 }
 
-enum Input: Equatable {
-    case cd(String)
-    case ls([Output])
+struct File {
+    let name: String
+    let size: Int
 }
 
-enum Output: Equatable {
-    case directory(String, [Output])
-    case file(String, Int)
-}
-
-extension Output {
-    var isFile: Bool {
-        switch self {
-        case .file:
-            return true
-        default:
-            return false
-        }
-    }
-    
-    var name: String {
-        switch self {
-        case .file(let name, _):
-            return name
-        case .directory(let name, _):
-            return name
-        }
-    }
-}
-
-extension Output {
-    func toString(indent: Int = 0) -> String {
-        let indentString = (0..<indent).map { _ in "\t" }.joined()
-        
-        switch self {
-        case .directory(let name, let contents):
-            return """
-            \(indentString)- \(name) (dir)
-            
-            """ + contents
-                .map { $0.toString(indent: indent + 1) }
-                .joined()
-        case .file(let name, let size):
-            return """
-            \(indentString)- \(name) (file, size=\(size))
-            
-            """
-        }
-       
-    }
-}
-
-extension Output {
+extension Folder {
     var size: Int {
-        switch self {
-        case .file(_, let size):
-            return size
-        case .directory(_, let contents):
-            return contents
-                .map(\.size)
-                .reduce(0, +)
-        }
+        files.map(\.size).reduce(0, +) +
+            folders.values.map(\.size).reduce(0, +)
     }
     
     var subdirectories: [(name: String, value: Int)] {
-        switch self {
-        case .file:
-            return []
-        case .directory(let name, let contents):
-            return [(name, size)] + contents.flatMap(\.subdirectories)
-        }
+        [(name, size)] + folders.values.flatMap(\.subdirectories)
     }
+}
+
+enum Input: Equatable {
+    case cd(String)
+    case ls([ListedItem])
+}
+
+enum ListedItem: Equatable {
+    case directory(String)
+    case file(String, Int)
 }

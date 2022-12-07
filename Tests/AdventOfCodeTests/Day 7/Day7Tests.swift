@@ -18,31 +18,39 @@ extension Day7Tests {
         try XCTAssertEqual(sut.state.size, 48381165)
     }
     
-    /*func testSubdirectories() throws {
-        try XCTAssertEqual(sut.state.subdirectories, [
-            ("/", 48381165),
-            ("a", 94853),
-            ("d", 24933642),
-            ("e", 584)
-        ])
-    }*/
-    
-    /*func testEdgeCase() throws {
-        let state = Output.directory("gsszlj", [
-            .file("dsm.hzf", 179837),
-            .file("gnrzhsw.jcf", 112354),
-            .file("jlwjsbw.bzf", 175236),
-            .directory("rvvjbz", [
-                .directory("ldglv", [
-                    .file("wjwzdg.ldb", 39389)
-                ])
-            ])
-        ])
+    func testSubdirectories() throws {
+        let subdirectories = try sut.state.subdirectories.sorted { $0.name < $1.name}
+        XCTAssertEqual(subdirectories.count, 4)
         
-        XCTAssertEqual(state.subdirectories, [
-            ("gsszlj", 506816),
-            ("ldglv", 39389),
-            ("rvvjbz", 39389)
-        ])
-    }*/
+        XCTAssertEqual(subdirectories[0].name, "/")
+        XCTAssertEqual(subdirectories[0].value, 48381165)
+        
+        XCTAssertEqual(subdirectories[1].name, "a")
+        XCTAssertEqual(subdirectories[1].value, 94853)
+        
+        XCTAssertEqual(subdirectories[2].name, "d")
+        XCTAssertEqual(subdirectories[2].value, 24933642)
+        
+        XCTAssertEqual(subdirectories[3].name, "e")
+        XCTAssertEqual(subdirectories[3].value, 584)
+        
+    }
+    
+    func testIdenticalNames() {
+        let subdirectories = Folder(name: "ab",
+                                    folders: [
+                                        "ab" : Folder(name: "ab", files: [.init(name: "test", size: 23)])
+                                    ],
+                                    files: [
+                                        .init(name: "ab", size: 23)
+                                    ]).subdirectories
+        
+        XCTAssertEqual(subdirectories.count, 2)
+        
+        XCTAssertEqual(subdirectories[0].name, "ab")
+        XCTAssertEqual(subdirectories[0].value, 46)
+        
+        XCTAssertEqual(subdirectories[1].name, "ab")
+        XCTAssertEqual(subdirectories[1].value, 23)
+    }
 }
