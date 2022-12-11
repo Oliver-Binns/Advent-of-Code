@@ -32,6 +32,8 @@ let package = Package(
                           dependencies: [
                             .product(name: "Algorithms",
                                      package: "swift-algorithms"),
+                            .productItem(name: "Collections",
+                                         package: "swift-collections"),
                             .productItem(name: "DequeModule",
                                          package: "swift-collections")
                           ],
