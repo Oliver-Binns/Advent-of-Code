@@ -21,17 +21,22 @@ struct Day11: Solution {
     }
     
     func calculatePartTwo() -> Int {
-        0
+        (0..<1).reduce(monkeys) { partialResult, _ in
+            inspectItems(monkeys: partialResult, dividedBy: 1)
+        }
+        .map(\.itemsInspected)
+        .max(count: 2)
+        .reduce(1, *)
     }
     
-    func inspectItems(monkeys: [Monkey]) -> [Monkey] {
+    func inspectItems(monkeys: [Monkey], dividedBy: Int = 3) -> [Monkey] {
         var monkeys = monkeys
         
         for index in 0..<monkeys.count {
             while !monkeys[index].items.isEmpty {
                 // multiply worry level:
                 let item = monkeys[index].inspectItem()
-                let worryLevel = monkeys[index].operation(item) / 3
+                let worryLevel = monkeys[index].operation(item) / dividedBy
                 let isDivisible = worryLevel % monkeys[index].test.divisibleBy == 0
                 let passToIndex = isDivisible ? monkeys[index].test.ifTrue : monkeys[index].test.ifFalse
                 
