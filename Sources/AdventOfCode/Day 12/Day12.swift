@@ -1,36 +1,51 @@
 struct Day12: Solution {
     static let day = 12
     
-    let initialState: State
+    let map: Map
     
     init(input: String) {
-        let map = input
+        map = Map(input
             .components(separatedBy: .newlines)
             .map(Array.init)
-            .filter(!\.isEmpty)
-        
-        guard let startPosition = map.findPosition(of: "S"),
-              let endPosition = map.findPosition(of: "E") else {
-            preconditionFailure("Could not find start or end position")
-        }
-        
-        initialState = .init(map: .init(map),
-                             visited: [startPosition],
-                             routes: [0: [startPosition]], goal: endPosition)
+            .filter(!\.isEmpty))
     }
     
     func calculatePartOne() -> Int {
-        var state = initialState
+        guard let startPosition = map.findPosition(of: "S"),
+              let goal = map.findPosition(of: "E") else {
+            preconditionFailure("Could not find end position")
+        }
+        var state = State(map: map, startPosition: startPosition)
         
-        while state.bestRoute == nil {
+        while true {
+            if let routeLength = state.routes
+                .filter({ $0.value.contains(goal) })
+                .keys
+                .min() {
+                    return routeLength
+                }
             state = state.iterate()
         }
-        
-        return state.bestRoute!
     }
     
     func calculatePartTwo() -> Int {
-        0
+        guard let startPosition = map.findPosition(of: "E") else {
+            preconditionFailure("Could not find end position")
+        }
+        var state = State(map: map, startPosition: startPosition)
+        
+        while true {
+            if let routeLength = state.routes
+                .first(where: { (key, positions) in
+                    positions.contains { position in
+                        map[position.y][position.x].height ==
+                            Character("a").asciiValue
+                    }
+                })?.key {
+                    return routeLength
+                }
+            state = state.iterate(isClimbing: false)
+        }
     }
 }
 
@@ -38,27 +53,24 @@ extension Day12 {
     struct State: Equatable {
         let map: Map
         let visited: Set<Position>
-        let goal: Position
         let routes: [Int: Set<Position>]
         
-        var bestRoute: Int? {
-            routes
-                .filter { $0.value.contains(goal) }
-                .keys
-                .min()
+        init(map: Map = .init(),
+             startPosition: Position) {
+            self.map = map
+            self.visited = [startPosition]
+            self.routes = [0: [startPosition]]
         }
         
         init(map: Map = .init(),
-             visited: Set<Position> = [],
-             routes: [Int: Set<Position>] = [:],
-             goal: Position) {
+             visited: Set<Position>,
+             routes: [Int: Set<Position>]) {
             self.map = map
             self.visited = visited
-            self.goal = goal
             self.routes = routes
         }
         
-        func iterate() -> State {
+        func iterate(isClimbing: Bool = true) -> State {
             var routes = self.routes
             guard let lowestValue = routes.keys.min(),
                   let position = routes[lowestValue]?.popFirst() else {
@@ -75,7 +87,8 @@ extension Day12 {
                 bestPosition.right
             ]
             .filter { !visited.contains($0) }
-            .filter { map.canMove(from: bestPosition, to: $0) }
+            .filter { map.canMove(from: bestPosition, to: $0,
+                                  isClimbing: isClimbing) }
             
             newPositions.forEach {
                 routes[lowestValue + 1, default: []].insert($0)
@@ -87,8 +100,7 @@ extension Day12 {
             
             return .init(map: map,
                          visited: visited.union(newPositions),
-                         routes: routes,
-                         goal: goal)
+                         routes: routes)
         }
     }
     
@@ -114,36 +126,43 @@ extension Day12 {
         }
         
         func canMove(from origin: Position,
-                     to destination: Position) -> Bool {
+                     to destination: Position,
+                     isClimbing: Bool = true) -> Bool {
             guard isPositionInBounds(destination) else { return false }
+            
             let originValue = map[origin.y][origin.x]
             let destinationValue = map[destination.y][destination.x]
             
-            switch (originValue, destinationValue) {
-            case ("S", "a"): return true
-            case (_, "S"): preconditionFailure("cannot go back to start")
-            case ("S", _): return false
-            case ("z", "E"): return true
-            case (_, "E"): return false
-            default:
-                guard let originAscii = originValue.asciiValue,
-                      let destinationAscii = destinationValue.asciiValue else {
-                    preconditionFailure("Expected cell to be ascii value")
-                }
-                return Int(originAscii) - Int(destinationAscii) >= -1
+            guard let originAscii = originValue.height,
+                  let destinationAscii = destinationValue.height else {
+                preconditionFailure("Expected cell to be ascii value")
             }
+            return isClimbing ?
+                Int(originAscii) - Int(destinationAscii) >= -1 :
+                Int(destinationAscii) - Int(originAscii) >= -1
+        }
+        
+        func findPosition(of character: Character) -> Position? {
+            map.enumerated().compactMap { (y, row) in
+                guard let x = row.firstIndex(of: character) else {
+                    return nil
+                }
+                return Position(x: x, y: y)
+            }.first
         }
     }
 }
 
-fileprivate extension Array where Element == [Character] {
-    func findPosition(of character: Character) -> Position? {
-        enumerated().compactMap { (y, row) in
-            guard let x = row.firstIndex(of: character) else {
-                return nil
-            }
-            return Position(x: x, y: y)
-        }.first
+fileprivate extension Character {
+    var height: UInt8? {
+        switch self {
+        case "S":
+            return Character("a").asciiValue
+        case "E":
+            return Character("z").asciiValue
+        default:
+            return self.asciiValue
+        }
     }
 }
 
