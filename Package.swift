@@ -1,4 +1,4 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 5.8
 import PackageDescription
 
 let inputFiles: [Resource] = (1...25)
@@ -9,7 +9,7 @@ let package = Package(
     name: "AdventOfCode",
     platforms: [
         .iOS(.v15),
-        .macOS(.v12)
+        .macOS(.v13)
     ],
     dependencies: [
         // Some recommended packages here, you might like to try them!
@@ -27,7 +27,10 @@ let package = Package(
         //.package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
     ],
     targets: [
-        .executableTarget(name: "AdventOfCode", resources: inputFiles),
-        .testTarget(name: "AdventOfCodeTests", dependencies: ["AdventOfCode"], resources: inputFiles)
+        .executableTarget(name: "AdventOfCode", 
+                          resources: inputFiles),
+        .testTarget(name: "AdventOfCodeTests",
+                    dependencies: ["AdventOfCode"],
+                    resources: inputFiles + [.process("Day 1/Day1-Part2.input")])
     ]
 )
