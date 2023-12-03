@@ -35,12 +35,17 @@ struct Runner {
     }
     
     private static func runDay(_ day: any Solution.Type) throws {
+        let startTime = Date()
         let inputString = try getInputString(filename: "Day\(day.day).input")
         let solution = day.init(input: inputString)
         
         print("Day \(day.day)")
         print("\tPart One: \(solution.calculatePartOne())")
         print("\tPart Two: \(solution.calculatePartTwo())")
+        
+        let elapsed = Date.now.timeIntervalSince(startTime)
+        print(String(format: "\tTotal time: %.3fs", elapsed))
+        
         print("\n")
     }
     

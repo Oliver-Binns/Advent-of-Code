@@ -1,7 +1,10 @@
+import Foundation
+
 struct Day3: Solution {
     static let day = 3
     
     let schematic: Schematic
+    let startDate = Date()
     
     init(input: String) {
         schematic = Schematic(rawValue: input)
@@ -38,7 +41,7 @@ struct Day3: Solution {
                 }
             }
         
-        return schematic.symbols
+        let value: Int = schematic.symbols
             .filter { $0.value == "*" }
             .map(\.key)
             .map {
@@ -51,5 +54,8 @@ struct Day3: Solution {
                     .reduce(1, *)
             }
             .reduce(0, +)
+    
+        
+        return value
     }
 }
