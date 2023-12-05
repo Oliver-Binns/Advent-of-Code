@@ -41,7 +41,7 @@ final class Day5Tests: XCTestCase, SolutionTest {
     
     func testPartTwoInitialisation() throws {
         try XCTAssertEqual(
-            sut.almanac.seedRangesToPlant,
+            sut.almanac.part2Ranges,
             [
                 79..<93,
                 55..<68

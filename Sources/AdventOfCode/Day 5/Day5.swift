@@ -8,16 +8,10 @@ struct Day5: Solution {
     }
     
     func calculatePartOne() -> Int {
-        guard let min = almanac.locations.min() else {
-            preconditionFailure("Unable to find location value")
-        }
-        return min
+        almanac.minLocation(for: \.part1Ranges)
     }
     
     func calculatePartTwo() -> Int {
-        guard let min = almanac.partTwoLocations.map(\.lowerBound).min() else {
-            preconditionFailure("Unable to find location value")
-        }
-        return min
+        almanac.minLocation(for: \.part2Ranges)
     }
 }

@@ -2,7 +2,12 @@ struct IslandAlmanac {
     let seedsToPlant: [Int]
     let mappings: [[Mapping]]
     
-    var seedRangesToPlant: [Range<Int>] {
+    var part1Ranges: [Range<Int>] {
+        seedsToPlant
+            .map { Range(start: $0, length: 1) }
+    }
+    
+    var part2Ranges: [Range<Int>] {
         seedsToPlant.chunked(into: 2).map {
             Range(start: $0[0], length: $0[1])
         }
@@ -25,12 +30,17 @@ struct IslandAlmanac {
         }
     }
     
-    var locations: [Int] {
-        seedsToPlant.map(mapToLocation(seed:))
+    func minLocation(for seeds: KeyPath<Self, [Range<Int>]>) -> Int {
+        guard let min = findLocationRanges(seeds: self[keyPath: seeds])
+            .map(\.lowerBound)
+            .min() else {
+            preconditionFailure("Unable to find location value")
+        }
+        return min
     }
-    
-    var partTwoLocations: [Range<Int>] {
-        var ranges = seedRangesToPlant
+
+    private func findLocationRanges(seeds: [Range<Int>]) -> [Range<Int>] {
+        var ranges = seeds
     
         // for each mapping, i.e. seed -> soil
         for mapping in mappings {
@@ -56,15 +66,5 @@ struct IslandAlmanac {
         }
         
         return ranges
-    }
-    
-    private func mapToLocation(seed: Int) -> Int {
-        mappings.reduce(seed) { partialResult, mappings in
-            guard let mapping = mappings
-                .first(where: { $0.contains(item: partialResult) }) else {
-                return partialResult
-            }
-            return mapping.map(item: partialResult)
-        }
     }
 }
