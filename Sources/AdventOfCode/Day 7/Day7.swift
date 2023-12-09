@@ -2,6 +2,12 @@ struct Day7: Solution {
     static let day = 7
     
     let players: [(Hand, Int)]
+    var playersPart2: [(Hand, Int)] {
+        players
+            .map {
+                ($0.0.part2, $0.1)
+            }
+    }
     
     init(input: String) {
         players = input
@@ -19,8 +25,8 @@ struct Day7: Solution {
             }
     }
     
-    func calculatePartOne() -> Int {
-        players
+    private func calculate(for keyPath: KeyPath<Self, [(Hand, Int)]>) -> Int {
+        self[keyPath: keyPath]
             .sorted(by:  { $0.0 < $1.0 })
             .map(\.1)
             .enumerated()
@@ -28,7 +34,11 @@ struct Day7: Solution {
             .reduce(0, +)
     }
     
+    func calculatePartOne() -> Int {
+        calculate(for: \.players)
+    }
+    
     func calculatePartTwo() -> Int {
-        0
+        calculate(for: \.playersPart2)
     }
 }

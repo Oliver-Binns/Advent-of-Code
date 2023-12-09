@@ -59,7 +59,37 @@ final class Day7Tests: XCTestCase, SolutionTest {
         try XCTAssertEqual(sut.calculatePartOne(), 6440)
     }
     
+    func testPart2Type() {
+        XCTAssertEqual(
+            Hand(cards: [.three, .two, .ten, .three, .king]).type,
+            .onePair
+        )
+        XCTAssertEqual(
+            Hand(cards: [.ten, .five, .five, .joker, .five]).type,
+            .fourOfAKind
+        )
+        XCTAssertEqual(
+            Hand(cards: [.king, .king, .six, .seven, .seven]).type,
+            .twoPair
+        )
+        XCTAssertEqual(
+            Hand(cards: [.king, .ten, .joker, .joker, .ten]).type,
+            .fourOfAKind
+        )
+        XCTAssertEqual(
+            Hand(cards: [.queen, .queen, .queen, .joker, .ace]).type,
+            .fourOfAKind
+        )
+    }
+    
+    func testMapHand() {
+        XCTAssertEqual(
+            Hand(cards: [.king, .ten, .jack, .jack, .ten]).part2,
+            Hand(cards: [.king, .ten, .joker, .joker, .ten])
+        )
+    }
+    
     func testPartTwo() throws {
-        try XCTAssertEqual(sut.calculatePartTwo(), 0)
+        try XCTAssertEqual(sut.calculatePartTwo(), 5905)
     }
 }

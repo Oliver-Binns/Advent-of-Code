@@ -1,16 +1,22 @@
 struct Hand: Equatable {
     let cards: [Card]
-    let type: HandType
     
-    init(cards: [Card]) {
-        self.cards = cards
-        self.type = Self.calculateType(from: cards)
+    var part2: Hand {
+        let cards = cards.replacing([.jack], with: [.joker])
+        return Hand(cards: cards)
     }
     
-    static func calculateType(from cards: [Card]) -> HandType {
-        let countsArray = Dictionary(cards.map { ($0, 1) }, uniquingKeysWith: +)
-            .values
-        let counts = Dictionary(countsArray.map { ($0, 1) }, uniquingKeysWith: +)
+    var type: HandType {
+        let withoutJokers = cards.filter { $0 != .joker }
+        let jokerCount = 5 - withoutJokers.count
+        let countsArray = Array(
+            Dictionary(withoutJokers.map { ($0, 1) },
+                       uniquingKeysWith: +)
+                .values
+        ).incrementingMax(by: jokerCount)
+        
+        let counts = Dictionary(countsArray.map { ($0, 1) }, 
+                                uniquingKeysWith: +)
         
         if counts[5] == 1 {
             return .fiveOfAKind
@@ -49,5 +55,18 @@ extension Hand: CustomStringConvertible {
         cards
             .map(\.rawValue)
             .joined()
+    }
+}
+
+extension Array where Element == Int {
+    func incrementingMax(by count: Int) -> Self {
+        guard let maxValue = self.max(),
+              let index = firstIndex(of: maxValue) else {
+            // all cards in the hand are Jokers!
+            return [5]
+        }
+        var value = self
+        value[index] += count
+        return value
     }
 }

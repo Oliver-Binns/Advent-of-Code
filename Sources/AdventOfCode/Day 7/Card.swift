@@ -12,6 +12,7 @@ enum Card: String {
     case four = "4"
     case three = "3"
     case two = "2"
+    case joker = "*"
 }
 
 extension Card {
@@ -43,6 +44,8 @@ extension Card {
             return 2
         case .two:
             return 1
+        case .joker:
+            return 0
         }
     }
 }
