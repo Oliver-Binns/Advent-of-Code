@@ -95,8 +95,18 @@ final class Day12Tests: XCTestCase, SolutionTest {
         try XCTAssertEqual(sut.calculatePartOne(), 21)
     }
     
+    func testInitialisationPart2() throws {
+        let row = try XCTUnwrap(Row(rawValue: ".# 1"))
+        XCTAssertEqual(
+            row.part2,
+            Row(springs: [".", "#", "?", ".", "#",
+                          "?", ".", "#", "?", ".",
+                          "#", "?", ".", "#"],
+                groups: [1,1,1,1,1])
+        )
+    }
+    
     func testPartTwo() throws {
-        try XCTAssertEqual(sut.calculatePartTwo(), 0)
+        try XCTAssertEqual(sut.calculatePartTwo(), 525152)
     }
 }
-// 3357 too low

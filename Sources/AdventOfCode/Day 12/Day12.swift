@@ -16,6 +16,8 @@ struct Day12: Solution {
     }
     
     func calculatePartTwo() -> Int {
-        0
+        rows.map(\.part2)
+            .map(\.possibleArrangements)
+            .reduce(0, +)
     }
 }

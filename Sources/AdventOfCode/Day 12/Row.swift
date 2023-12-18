@@ -2,6 +2,12 @@ struct Row: Equatable {
     let springs: [Spring]
     let groups: [Int]
     
+    static func == (lhs: Row, rhs: Row) -> Bool {
+        lhs.springs == rhs.springs &&
+        lhs.groups == rhs.groups
+    }
+    
+    
     var requiredGroups: [Spring] {
         groups.map { count in
             (0..<count).map { _ in
@@ -14,6 +20,18 @@ struct Row: Equatable {
     
     var possibleArrangements: Int {
         arrangements(for: requiredGroups, in: springs)
+    }
+    
+    var part2: Row {
+        Row(springs: (0..<5).map { _ in
+                springs
+            }
+            .joined(separator: [.unknown])
+            .map { $0 },
+            groups: (0..<5).flatMap { _ in
+                groups
+            }
+        )
     }
     
     init(springs: [Spring],
@@ -48,8 +66,27 @@ struct Row: Equatable {
                 springs[firstOperationalSpring...].map { $0 })
     }
     
-    func arrangements(for groups: [Spring],
-                      in springs: [Spring]) -> Int {
+    struct CachedItem: Hashable {
+        let groups: [Spring]
+        let springs: [Spring]
+    }
+    
+    final class Cache {
+        var _cache: [CachedItem: Int] = [:]
+        
+        subscript(groups: [Spring], springs: [Spring]) -> Int? {
+            _cache[.init(groups: groups, springs: springs)]
+        }
+        
+        func update(groups: [Spring], springs: [Spring], value: Int) {
+            _cache[.init(groups: groups, springs: springs)] = value
+        }
+    }
+    
+    private var cache = Cache()
+    
+    private func arrangements(for groups: [Spring],
+                              in springs: [Spring]) -> Int {
         // there must be enough springs remaining
         // to match all groups
         guard groups.count <= springs.count else {
@@ -61,6 +98,10 @@ struct Row: Equatable {
             return springs.allSatisfy({ $0 != .damaged }) ? 1 : 0
         }
         
+        if let cached = cache[groups, springs] {
+            return cached
+        }
+        
         guard groups[0] == .damaged else {
             switch springs[0] {
             case .damaged:
@@ -69,8 +110,10 @@ struct Row: Equatable {
                 return 0
             case .operational, .unknown:
                 // remove at top of pile and recurse
-                return arrangements(for: groups[1...].map { $0 },
-                                    in: springs[1...].map { $0 })
+                let value = arrangements(for: groups[1...].map { $0 },
+                                       in: springs[1...].map { $0 })
+                cache.update(groups: groups, springs: springs, value: value)
+                return value
             }
         }
         
@@ -83,18 +126,24 @@ struct Row: Equatable {
             // expected damaged.. got damaged
             // remove all springs in this group
             // single-valid combination
-            return arrangements(for: newGroups, in: newSprings)
+            let value = arrangements(for: newGroups, in: newSprings)
+            cache.update(groups: groups, springs: springs, value: value)
+            return value
         case .operational:
             // expected damaged...
             // got operational, remove top spring and continue check
-            return arrangements(for: groups,
-                                in: springs[1...].map { $0 })
+            let value = arrangements(for: groups,
+                                     in: springs[1...].map { $0 })
+            cache.update(groups: groups, springs: springs, value: value)
+            return value
         case .unknown:
             // expected damaged.. this is either damaged OR operational
             // combine above two combinations
-            return arrangements(for: newGroups, in: newSprings) +
+            let value = arrangements(for: newGroups, in: newSprings) +
                 arrangements(for: groups,
                              in: springs[1...].map { $0 })
+            cache.update(groups: groups, springs: springs, value: value)
+            return value
         }
     }
 }
