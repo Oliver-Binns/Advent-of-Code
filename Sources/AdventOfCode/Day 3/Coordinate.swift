@@ -46,3 +46,9 @@ extension Coordinate {
         Coordinate(x: x + 1, y: y)
     }
 }
+
+extension Coordinate: CustomStringConvertible {
+    var description: String {
+        "(\(x), \(y))"
+    }
+}
