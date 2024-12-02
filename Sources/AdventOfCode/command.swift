@@ -2,6 +2,15 @@ import Foundation
 
 @main
 struct Runner {
+    static var timeFormatter: DateComponentsFormatter {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute, .second]
+        formatter.maximumUnitCount = 2
+        formatter.unitsStyle = .short
+        formatter.zeroFormattingBehavior = .pad
+        return formatter
+    }
+    
     static func main() throws {
         try [
             Day1.self,
@@ -39,9 +48,25 @@ struct Runner {
         let solution = day.init(input: inputString)
         
         print("Day \(day.day)")
-        print("\tPart One: \(solution.calculatePartOne())")
-        print("\tPart Two: \(solution.calculatePartTwo())")
+        
+        run(note: "Part One",
+            calculate: solution.calculatePartOne)
+        run(note: "Part Two",
+            calculate: solution.calculatePartTwo)
         print("\n")
+    }
+    
+    static func run(
+        note: String,
+        calculate: () -> CustomStringConvertible
+    ) {
+        let start = Date()
+        print("\t\(note): ", calculate())
+        let end = Date()
+        let duration = end.timeIntervalSince(start)
+        let str = timeFormatter.string(from: duration)
+        let milliseconds = String(format: "%.2f", duration * 1000)
+        print("\tin: ", str ?? "", "(\(milliseconds) ms)")
     }
     
     private static func getInputString(filename: String) throws -> String {
