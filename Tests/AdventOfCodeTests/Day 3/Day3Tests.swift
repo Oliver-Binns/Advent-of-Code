@@ -9,7 +9,7 @@ final class Day3Tests: XCTestCase, SolutionTest {
     }
     
     func testPartTwo() throws {
-        try XCTAssertEqual(sut.calculatePartTwo(), 0)
+        try XCTAssertEqual(sut.calculatePartTwo(), 48)
     }
 }
 
@@ -19,8 +19,10 @@ extension Day3Tests {
             sut.instructions,
             [
                 .multiply(2, 4),
+                .dont,
                 .multiply(5, 5),
                 .multiply(11, 8),
+                .do,
                 .multiply(8, 5),
             ]
         )
