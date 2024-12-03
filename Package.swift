@@ -1,4 +1,4 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 5.9
 import PackageDescription
 
 let inputFiles: [Resource] = (1...25)
@@ -8,8 +8,8 @@ let inputFiles: [Resource] = (1...25)
 let package = Package(
     name: "AdventOfCode",
     platforms: [
-        .iOS(.v15),
-        .macOS(.v12)
+        .iOS(.v16),
+        .macOS(.v13)
     ],
     dependencies: [
         // Some recommended packages here, you might like to try them!
@@ -27,7 +27,17 @@ let package = Package(
         //.package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
     ],
     targets: [
-        .executableTarget(name: "AdventOfCode", resources: inputFiles),
-        .testTarget(name: "AdventOfCodeTests", dependencies: ["AdventOfCode"], resources: inputFiles)
+        .executableTarget(
+            name: "AdventOfCode",
+            resources: inputFiles,
+            swiftSettings: [
+                .unsafeFlags(["-enable-bare-slash-regex"])
+            ]
+        ),
+        .testTarget(
+            name: "AdventOfCodeTests",
+            dependencies: ["AdventOfCode"],
+            resources: inputFiles
+        )
     ]
 )
