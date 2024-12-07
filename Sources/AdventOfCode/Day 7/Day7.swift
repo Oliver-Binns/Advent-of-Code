@@ -52,11 +52,13 @@ extension Day7.Equation {
     ) -> Bool {
         components.suffix(from: 1)
             .reduce([components[0]]) { partialResult, nextValue in
-                partialResult.flatMap { value in
-                    supportedOperators.map { op in
-                        op(value, nextValue)
+                partialResult
+                    .filter { $0 <= total }
+                    .flatMap { value in
+                        supportedOperators.map { op in
+                            op(value, nextValue)
+                        }
                     }
-                }
             }
             .contains(total)
     }
