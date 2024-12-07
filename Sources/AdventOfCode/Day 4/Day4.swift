@@ -4,15 +4,7 @@ struct Day4: Solution {
     let grid: Grid<Character>
 
     init(input: String) {
-        grid = Grid(values: input
-            .components(separatedBy: .newlines)
-            .map {
-                $0.reduce([Character]()) {
-                    $0 + [$1]
-                }
-            }
-            .filter { !$0.isEmpty }
-        )
+        grid = Grid(string: input)
     }
 
     func calculatePartOne() -> Int {

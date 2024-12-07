@@ -11,6 +11,19 @@ struct Grid<Element> {
     }
 }
 
+extension Grid where Element == Character {
+    init(string: String) {
+        self.values = string
+            .components(separatedBy: .newlines)
+            .map {
+                $0.reduce([Character]()) {
+                    $0 + [$1]
+                }
+            }
+            .filter { !$0.isEmpty }
+    }
+}
+
 extension Grid where Element: Equatable {
     func findPositions(of element: Element) -> [Point] {
         values.enumerated().flatMap { y, row in
@@ -77,5 +90,14 @@ extension Grid where Element == Character {
                 $0 + String(values[$1.y][$1.x])
             }
         }
+    }
+}
+
+extension Grid: CustomStringConvertible
+where Element: CustomStringConvertible {
+    var description: String {
+        values
+            .map { $0.map(\.description).joined() }
+            .joined(separator: "\n")
     }
 }
