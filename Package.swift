@@ -16,8 +16,11 @@ let package = Package(
         
         // Sequence and collection algorithms
         // i.e. rotations, permutations, etc.
-        //.package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
-        
+        .package(
+            url: "https://github.com/apple/swift-algorithms",
+            from: "1.0.0"
+        ),
+
         // Extra data structure implementations
         // i.e. OrderedSet, Deque, Heap
         //.package(url: "https://github.com/apple/swift-collections.git",
@@ -29,6 +32,9 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "AdventOfCode",
+            dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms")
+            ],
             resources: inputFiles,
             swiftSettings: [
                 .unsafeFlags(["-enable-bare-slash-regex"])
