@@ -1,15 +1,25 @@
 struct Day9: Solution {
     static let day = 9
-    
+
+    let drive: Drive
+
     init(input: String) {
-        
+        drive = Drive(input: input)
     }
-    
+
     func calculatePartOne() -> Int {
-        0
+        drive
+            .remap()
+            .checksum
     }
     
     func calculatePartTwo() -> Int {
-        0
+        drive.remap(preventFragmentation: true).checksum
+    }
+}
+
+extension Int {
+    var isEven: Bool {
+        self % 2 == 0
     }
 }
