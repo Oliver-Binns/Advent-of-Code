@@ -11,14 +11,14 @@ struct Grid<Element> {
     }
 }
 
-extension Grid where Element == Character {
-    init(string: String) {
+extension Grid {
+    init(string: String, mapping: (Character) -> Element? = { $0 }) {
         self.values = string
             .components(separatedBy: .newlines)
             .map {
                 $0.reduce([Character]()) {
                     $0 + [$1]
-                }
+                }.compactMap(mapping)
             }
             .filter { !$0.isEmpty }
     }
@@ -92,6 +92,9 @@ extension Grid where Element == Character {
         }
     }
 }
+
+extension Grid: Equatable
+where Element: Equatable { }
 
 extension Grid: CustomStringConvertible
 where Element: CustomStringConvertible {
