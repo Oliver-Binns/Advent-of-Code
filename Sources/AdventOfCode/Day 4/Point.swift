@@ -25,3 +25,10 @@ extension Point {
         }
     }
 }
+
+extension Point {
+    var neighbours: [Point] {
+        [Direction.north, .east, .south, .west]
+            .map { move(in: $0) }
+    }
+}
