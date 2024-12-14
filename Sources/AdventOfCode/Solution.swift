@@ -4,6 +4,6 @@ protocol Solution {
     
     static var day: Int { get }
     init(input: String)
-    func calculatePartOne() -> Output1
-    func calculatePartTwo() -> Output2
+    func calculatePartOne() async -> Output1
+    func calculatePartTwo() async -> Output2
 }

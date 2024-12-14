@@ -11,8 +11,8 @@ struct Runner {
         return formatter
     }
     
-    static func main() throws {
-        try [
+    static func main() async throws {
+        let solutions: [any Solution.Type] = [
             Day1.self,
             Day2.self,
             Day3.self,
@@ -38,30 +38,32 @@ struct Runner {
             Day23.self,
             Day24.self,
             Day25.self
-        ].forEach { day in
-            try runDay(day)
+        ]
+
+        for day in solutions {
+            try await runDay(day)
         }
     }
     
-    private static func runDay(_ day: any Solution.Type) throws {
+    private static func runDay(_ day: any Solution.Type) async throws {
         let inputString = try getInputString(filename: "Day\(day.day).input")
         let solution = day.init(input: inputString)
         
         print("Day \(day.day)")
         
-        run(note: "Part One",
+        await run(note: "Part One",
             calculate: solution.calculatePartOne)
-        run(note: "Part Two",
+        await run(note: "Part Two",
             calculate: solution.calculatePartTwo)
         print("\n")
     }
     
     static func run(
         note: String,
-        calculate: () -> CustomStringConvertible
-    ) {
+        calculate: () async -> CustomStringConvertible
+    ) async {
         let start = Date()
-        print("\t\(note): ", calculate())
+        await print("\t\(note): ", calculate())
         let end = Date()
         let duration = end.timeIntervalSince(start)
         let str = timeFormatter.string(from: duration)
