@@ -12,7 +12,10 @@ struct Grid<Element> {
 }
 
 extension Grid {
-    init(string: String, mapping: (Character) -> Element? = { $0 }) {
+    init(
+        string: any StringProtocol,
+        mapping: (Character) -> Element? = { $0 }
+    ) {
         self.values = string
             .components(separatedBy: .newlines)
             .map {
